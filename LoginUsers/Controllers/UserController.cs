@@ -13,19 +13,19 @@ namespace LoginUsers.Controllers;
 public class UserController : ControllerBase
 {
 
-    private readonly RegisterService _registerService;
+    private readonly UserService _userService;
 
-    public UserController(RegisterService registerService)
+    public UserController(UserService userService)
     {
-        _registerService = registerService;
+        _userService = userService;
     }
 
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> Post([FromBody] CreateUserDto create)
     {
         try
         {
-             await _registerService.RegisterAsync(create);
+             await _userService.RegisterAsync(create);
             return Ok($"{create.Username} cadastrado com sucesso");
         }
         catch (Exception)
@@ -33,4 +33,11 @@ public class UserController : ControllerBase
             return StatusCode(500, "Ocorreu um erro no servidor");
         }
     }
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginUserDto dto)
+    {
+     var token = await _userService.Login(dto);
+        return Ok(token);
+    }
+
 }
